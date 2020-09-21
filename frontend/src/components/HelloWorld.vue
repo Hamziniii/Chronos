@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue } from 'vue-class-component'
 
 @Options({
   props: {
@@ -30,18 +30,22 @@ export default class HelloWorld extends Vue {
   msg!: string
   time: [number, number, number] = [0,0,0]
   int: number | null = null
+  run = function(this: {time: [number, number, number], run: () => void}) {
+    const d = new Date(); (this.time as [number, number, number]) = [d.getHours(), d.getMinutes(), d.getSeconds()];
+    window.requestAnimationFrame(this.run.bind(this))
+  }
 
   public mounted() {
     // console.log((this.$parent?.$el as HTMLElement).id)
     const dashes = document.getElementsByClassName("dash")
     for(let i = 0; i < dashes.length; i++)
       (dashes.item(i) as HTMLElement).style.transform = `rotate(${360 / 12 * parseInt(dashes.item(i)?.innerHTML || "0") + 90}deg)`
-    
-    console.log()
-    
 
-    this.int = setInterval((() => {const d = new Date(); this.time = [d.getHours(), d.getMinutes(), d.getSeconds()]}).bind(this), 1000)
+    // this.int = setInterval((() => { }).bind(this), 1000)
+    window.requestAnimationFrame(this.run.bind(this))
   }
+
+ 
 
   public unmounted() {
     if(this.int)
@@ -54,6 +58,7 @@ export default class HelloWorld extends Vue {
 <style scoped lang="scss">
 #clock_outer {
   --acccent: #764ba2;
+  // --acccent: #cfd9df;
 
   display: grid;
   grid-template: 1fr auto 1fr / 1fr auto 1fr;
@@ -79,8 +84,11 @@ export default class HelloWorld extends Vue {
   #clock_analog_inner { // 
     grid-area: 2 / 2;
     --size: #{'min(500px, 70vmin)'};
-    --mode: #ffffffb6;
-    --mode2: #000;
+    // --mode2: #ffffff; //b6;
+    // --mode: #000000b6;
+
+    --mode: #ffffffb6; //b6;
+    --mode2: #000000;
 
     width: var(--size);
     height: var(--size);

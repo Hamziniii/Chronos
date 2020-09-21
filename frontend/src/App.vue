@@ -2,7 +2,7 @@
   <div id="app" :style="info">
     <div id="middle" :style="gridStyle">
       <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-      <span id="text"><i>Current Class: Adv. Comp. Sci. Topics, Next Class: AP Calc BC</i><br>Time Left: 5:15:03</span>
+      <Timing />
     </div>
   </div>
 </template>
@@ -10,11 +10,13 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import HelloWorld from './components/HelloWorld.vue';
+import Timing from './components/Timing.vue'
 import { getColor } from './util/color'
 
 @Options({
   components: {
     HelloWorld,
+    Timing
   },
 })
 export default class App extends Vue {
@@ -84,6 +86,9 @@ body {
 
     #text {
       text-align: center;
+      #time {
+        font-size: 1.5em;
+      }
     }
   }
 }
