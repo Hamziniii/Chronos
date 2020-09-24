@@ -4,6 +4,7 @@
       <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
       <Timing />
     </div>
+    <div id="changeButton"><img src="./assets/refresh.svg"></div>
   </div>
 </template>
 
@@ -88,6 +89,34 @@ body {
       text-align: center;
       #time {
         font-size: 1.5em;
+      }
+    }
+  }
+
+  #changeButton {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #00000041; 
+    display: grid; 
+    grid-template: 1fr auto 1fr / 1fr auto 1fr; 
+
+    img {
+      grid-area: 2 / 2;
+      filter: invert(1);
+      width: 25px; 
+      height: 25px;
+      transition: transform .5s;
+
+      &:hover {
+        transform: scale(1.3);
+      }
+
+      &:active {
+        transform: scale(.9);
       }
     }
   }

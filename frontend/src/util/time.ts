@@ -26,19 +26,19 @@ export function run(sched?: Schedule[]) {
                 const temp = updateNextDay(currentSchedule.periods[0].interval!.start).diffNow(["hour", "minute", "seconds"])
                 timeLeft = `${temp.toObject().hours!}:${zN(temp.toObject().minutes!)}:${zN(Math.floor(temp.toObject().seconds!))}` // time left till that period starts
                 currentPeriodName = "n/a"
-                nextPeriodName = currentSchedule.periods[0].name
+                nextPeriodName = currentSchedule.periods[0]?.name
             } else if (currentSchedule.periods.some(p => between(p.interval!))) {
                 const temp1 = currentSchedule.periods.filter(p => between(p.interval!))[0]
                 const temp2 = temp1.interval!.end.diffNow(["hour", "minute", "seconds"])
                 timeLeft = `${temp2.toObject().hours!}:${zN(temp2.toObject().minutes!)}:${zN(Math.floor(temp2.toObject().seconds!))}` // time left till that period starts
-                currentPeriodName = temp1.name
-                nextPeriodName = currentSchedule.periods[currentSchedule.periods.indexOf(temp1) + 1].name || "n/a"
+                currentPeriodName = temp1?.name
+                nextPeriodName = currentSchedule.periods[currentSchedule.periods.indexOf(temp1) + 1]?.name || "n/a"
             } else {
                 const temp1 = currentSchedule.periods[currentSchedule.periods.indexOf(currentSchedule.periods.filter(p => p.interval!.end.toMillis() < DateTime.local().toMillis())[0]) + 1]
                 const temp2 = temp1.interval!.start.diffNow(["hour", "minute", "seconds"])
                 timeLeft = `${temp2.toObject().hours!}:${zN(temp2.toObject().minutes!)}:${zN(Math.floor(temp2.toObject().seconds!))}` // time left till that period starts
                 currentPeriodName = "n/a"
-                nextPeriodName = temp1.name || "n/a"
+                nextPeriodName = temp1?.name || "n/a"
             }
         
         // console.log(timeLeft, currentPeriodName, nextPeriodName)

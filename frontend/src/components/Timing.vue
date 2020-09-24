@@ -13,8 +13,8 @@ export default class Timings extends Vue {
   public mounted() {
     this.timing = time.run()
     this.timingData = this.timing()
-
-    this.int = setInterval((() => {this.timingData = this.timing()}).bind(this), 1000)
+    console.log("potato")
+    this.int = setInterval((() => {console.log("potato"); this.timingData = this.timing()}).bind(this), 1000)
   }
 
   public beforeUnmount() {
