@@ -10,23 +10,31 @@ if (process.env.NODE_ENV === 'production') {
         'For more details, visit https://goo.gl/AFskqB'
       )
     },
-    registered () {
-      console.log('Service worker has been registered.')
+    registered() {
+      console.log("Service worker has been registered.");
     },
-    cached () {
-      console.log('Content has been cached for offline use.')
+    cached() {
+      console.log("Content has been cached for offline use.");
     },
-    updatefound () {
-      console.log('New content is downloading.')
+    updatefound() {
+      // new content clear cache so user gets the new version
+      caches.keys().then(cacheNames => {
+        cacheNames.forEach(cacheName => {
+          caches.delete(cacheName);
+        });
+      });
+      console.log("New content is downloading.");
     },
-    updated () {
-      console.log('New content is available; please refresh.')
+    updated() {
+      console.log("New content is available; please refresh.");
     },
-    offline () {
-      console.log('No internet connection found. App is running in offline mode.')
+    offline() {
+      console.log(
+        "No internet connection found. App is running in offline mode."
+      );
     },
-    error (error) {
-      console.error('Error during service worker registration:', error)
+    error(error) {
+      console.error("Error during service worker registration:", error);
     }
-  })
+  });
 }
