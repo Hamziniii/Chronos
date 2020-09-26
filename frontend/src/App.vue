@@ -2,22 +2,19 @@
   <div id="app" :style="info">
     <div id="middle" :style="gridStyle">
       <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-      <Timing />
+      <span id="text"><i>Current Class: Adv. Comp. Sci. Topics, Next Class: AP Calc BC</i><br>Time Left: 5:15:03</span>
     </div>
-    <div id="changeButton"><img src="./assets/refresh.svg"></div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import HelloWorld from './components/HelloWorld.vue';
-import Timing from './components/Timing.vue'
 import { getColor } from './util/color'
 
 @Options({
   components: {
     HelloWorld,
-    Timing
   },
 })
 export default class App extends Vue {
@@ -87,37 +84,6 @@ body {
 
     #text {
       text-align: center;
-      #time {
-        font-size: 1.5em;
-      }
-    }
-  }
-
-  #changeButton {
-    position: absolute;
-    bottom: 40px;
-    right: 40px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #00000041; 
-    display: grid; 
-    grid-template: 1fr auto 1fr / 1fr auto 1fr; 
-
-    img {
-      grid-area: 2 / 2;
-      filter: invert(1);
-      width: 25px; 
-      height: 25px;
-      transition: transform .5s;
-
-      &:hover {
-        transform: scale(1.3);
-      }
-
-      &:active {
-        transform: scale(.9);
-      }
     }
   }
 }
