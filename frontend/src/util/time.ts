@@ -14,7 +14,7 @@ export function run(sched?: Schedule[]) {
     
     return function (selected?: number): TimeInfo {
         let timeLeft: string, currentPeriodName: string, nextPeriodName: string
-
+        let TYPE = 0
         currentSchedule = selected != undefined && s[selected] != undefined ? s[selected] : s.filter(_s => _s.days.includes(days.indexOf(DateTime.local().weekdayLong) as Schedule["days"][0]))[0]
         // console.log(currentSchedule,  selected != undefined && s[selected] != undefined, days.indexOf(DateTime.local().weekdayLong))
         if(currentSchedule == undefined) {
@@ -27,20 +27,23 @@ export function run(sched?: Schedule[]) {
                 timeLeft = `${temp.toObject().hours!}:${zN(temp.toObject().minutes!)}:${zN(Math.floor(temp.toObject().seconds!))}` // time left till that period starts
                 currentPeriodName = "n/a"
                 nextPeriodName = currentSchedule.periods[0]?.name
+                TYPE = 1
             } else if (currentSchedule.periods.some(p => between(p.interval!))) {
                 const temp1 = currentSchedule.periods.filter(p => between(p.interval!))[0]
-                const temp2 = temp1.interval!.end.diffNow(["hour", "minute", "seconds"])
+                const temp2 = temp1.interval!.end.diffNow(["hour", "minute", "seconds"]) 
                 timeLeft = `${temp2.toObject().hours!}:${zN(temp2.toObject().minutes!)}:${zN(Math.floor(temp2.toObject().seconds!))}` // time left till that period starts
                 currentPeriodName = temp1?.name
                 nextPeriodName = currentSchedule.periods[currentSchedule.periods.indexOf(temp1) + 1]?.name || "n/a"
+                TYPE = 2
             } else {
-                const temp1 = currentSchedule.periods[currentSchedule.periods.indexOf(currentSchedule.periods.filter(p => p.interval!.end.toMillis() < DateTime.local().toMillis())[0]) + 1]
+                const temp1 = currentSchedule.periods[currentSchedule.periods.indexOf(currentSchedule.periods.filter(p => p.interval!.end.toMillis() < DateTime.local().toMillis()).reverse()[0]) + 1]
                 const temp2 = temp1.interval!.start.diffNow(["hour", "minute", "seconds"])
                 timeLeft = `${temp2.toObject().hours!}:${zN(temp2.toObject().minutes!)}:${zN(Math.floor(temp2.toObject().seconds!))}` // time left till that period starts
-                currentPeriodName = "n/a"
+                currentPeriodName = "Break"
                 nextPeriodName = temp1?.name || "n/a"
+                TYPE = 3
             }
-        
+        // console.log(TYPE, currentSchedule.periods.map(p => [p.interval!.end.toMillis() < DateTime.local().toMillis(), p.name]))
         // console.log(timeLeft, currentPeriodName, nextPeriodName)
         return {timeLeft: "Time left: " + timeLeft, currentPeriodName, nextPeriodName}
     }

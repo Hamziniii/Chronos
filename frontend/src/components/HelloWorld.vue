@@ -1,8 +1,8 @@
 <template>
   <div class="clock">
-    <div id="clock_outer">
+    <div id="clock_outer" class="noselect">
       <div id="clock_analog_inner" v-if="this.type == 'analog'">
-        <div id="inner">
+        <div id="inner" @click="this.change">
           <div class="dash" v-for="i in [0,1,2,3,4,5,6,7,8,9,10,11]" :key="i">{{i}}</div>
           <!-- <div id="hr" :style="`transform: rotate(${360 / 12 * (this.time[0] % 12) + 90 + 30 * (this.time[1] / 60)}deg)`"></div> -->
           <div id="hr" :style="`transform: rotate(${this.time[0]*360/12 + ((this.time[1] * 360/60)/12) + 90}deg)`"></div>
@@ -10,7 +10,7 @@
           <div id="min" :style="`transform: rotate(${(this.time[1] * 360/60) + (this.time[2] * 360/60)/60 + 90}deg)`"></div>
         </div>
       </div>
-      <div id="clock_digital_inner" v-else>
+      <div id="clock_digital_inner" v-else  @click="this.change">
         <span id="text">{{this.time.map(t => Math.max(t, 10) == 10 && t != 10 ? "0" + t : t).map((t, i) => i == 0 ? t > 12 ? t - 12 : t : t).join(":")}} {{this.time[0] > 12 ? "PM" : "AM"}}</span>
       </div>
     </div>
@@ -37,15 +37,22 @@ export default class HelloWorld extends Vue {
 
   public mounted() {
     // console.log((this.$parent?.$el as HTMLElement).id)
-    const dashes = document.getElementsByClassName("dash")
-    for(let i = 0; i < dashes.length; i++)
-      (dashes.item(i) as HTMLElement).style.transform = `rotate(${360 / 12 * parseInt(dashes.item(i)?.innerHTML || "0") + 90}deg)`
-
+    this.dash()
     // this.int = setInterval((() => { }).bind(this), 1000)
     window.requestAnimationFrame(this.run.bind(this))
   }
 
- 
+  dash() {
+    const dashes = document.getElementsByClassName("dash")
+    for(let i = 0; i < dashes.length; i++)
+      (dashes.item(i) as HTMLElement).style.transform = `rotate(${360 / 12 * parseInt(dashes.item(i)?.innerHTML || "0") + 90}deg)`
+  }
+
+  change() {
+    this.type == 'analog' ? this.type = 'digital' : this.type = 'analog'
+    if(this.type == 'analog')
+      window.setTimeout(this.dash, 10)
+  }
 
   public unmounted() {
     if(this.int)
@@ -200,5 +207,15 @@ export default class HelloWorld extends Vue {
       }
     }
   }
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
 </style>
