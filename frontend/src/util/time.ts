@@ -11,11 +11,14 @@ export function run(sched?: Schedule[]) {
     const c: Schedule[] = ((sched || schedules) as Schedule[]).map(s => {s.periods.forEach(p => {p.interval = Interval.fromDateTimes(updateNextDay(DateTime.fromObject({hour: p.start[0], minute: p.start[1]})), updateNextDay(DateTime.fromObject({hour: p.end[0], minute: p.end[1]}))); return p}) ; return s}) 
     const s: Schedule[] = ((sched || schedules) as Schedule[]).map(s => {s.periods.forEach(p => {p.interval = Interval.fromDateTimes(DateTime.fromObject({hour: p.start[0], minute: p.start[1]}), DateTime.fromObject({hour: p.end[0], minute: p.end[1]})); return p}) ; return s}) 
     let currentSchedule: Schedule
+    let nextSchedule: Schedule
     
     return function (selected?: number): TimeInfo {
         let timeLeft: string, currentPeriodName: string, nextPeriodName: string
+        let selected2 = (selected || 0 + 1) % c.length
         let TYPE = 0
         currentSchedule = selected != undefined && s[selected] != undefined ? s[selected] : s.filter(_s => _s.days.includes(days.indexOf(DateTime.local().weekdayLong) as Schedule["days"][0]))[0]
+        nextSchedule = selected != undefined && s[selected] != undefined ? s[selected] : s.filter(_s => _s.days.includes(days.indexOf(DateTime.local().weekdayLong) as Schedule["days"][0]))[0]
         // console.log(currentSchedule,  selected != undefined && s[selected] != undefined, days.indexOf(DateTime.local().weekdayLong))
         if(currentSchedule == undefined) {
             timeLeft = "No schedule for today"

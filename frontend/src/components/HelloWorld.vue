@@ -11,7 +11,7 @@
         </div>
       </div>
       <div id="clock_digital_inner" v-else  @click="this.change">
-        <span id="text">{{this.time.map(t => Math.max(t, 10) == 10 && t != 10 ? "0" + t : t).map((t, i) => i == 0 ? t > 12 ? t - 12 : t : t).join(":")}} {{this.time[0] > 12 ? "PM" : "AM"}}</span>
+        <span id="text">{{this.time.map(t => Math.max(t, 10) == 10 && t != 10 ? "0" + t : t).map((t, i) => i == 0 ? t > 12 ? t - 12 : t : t).join(":")}} {{this.time[0] > 11 ? "PM" : "AM"}}</span>
       </div>
     </div>
   </div>
