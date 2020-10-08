@@ -26,7 +26,7 @@ export function run(sched?: Schedule[]) {
             nextPeriodName = "n/a"
         } else
             if(DateTime.local().toMillis() < currentSchedule.periods[0].interval!.start.toMillis() || DateTime.local().toMillis() > currentSchedule.periods[currentSchedule.periods.length - 1].interval!.end.toMillis()) {
-                const sch = new Date().getHours() > 0 ? nextSchedule : currentSchedule
+                const sch = DateTime.local().toMillis() < currentSchedule.periods[0].interval!.start.toMillis() ? currentSchedule : nextSchedule
                 const temp = updateNextDay(sch.periods[0].interval!.start).diffNow(["hour", "minute", "seconds"])
                 timeLeft = `${temp.toObject().hours!}:${zN(temp.toObject().minutes!)}:${zN(Math.floor(temp.toObject().seconds!))}` // time left till that period starts
                 currentPeriodName = "n/a"
