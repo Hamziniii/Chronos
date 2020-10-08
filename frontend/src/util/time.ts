@@ -15,10 +15,10 @@ export function run(sched?: Schedule[]) {
     
     return function (selected?: number): TimeInfo {
         let timeLeft: string, currentPeriodName: string, nextPeriodName: string
-        let selected2 = (selected || 0 + 1) % c.length
+        let selected2 = ((selected || 0) + 1) % c.length
         let TYPE = 0
         currentSchedule = selected != undefined && s[selected] != undefined ? s[selected] : s.filter(_s => _s.days.includes(days.indexOf(DateTime.local().weekdayLong) as Schedule["days"][0]))[0]
-        nextSchedule = selected != undefined && s[selected] != undefined ? s[selected] : s.filter(_s => _s.days.includes(days.indexOf(DateTime.local().weekdayLong) as Schedule["days"][0]))[0]
+        nextSchedule = selected2 != undefined && s[selected2] != undefined ? s[selected2] : s.filter(_s => _s.days.includes(days.indexOf(DateTime.local().weekdayLong) as Schedule["days"][0]))[0]
         // console.log(currentSchedule,  selected != undefined && s[selected] != undefined, days.indexOf(DateTime.local().weekdayLong))
         if(currentSchedule == undefined) {
             timeLeft = "No schedule for today"
@@ -26,10 +26,11 @@ export function run(sched?: Schedule[]) {
             nextPeriodName = "n/a"
         } else
             if(DateTime.local().toMillis() < currentSchedule.periods[0].interval!.start.toMillis() || DateTime.local().toMillis() > currentSchedule.periods[currentSchedule.periods.length - 1].interval!.end.toMillis()) {
-                const temp = updateNextDay(currentSchedule.periods[0].interval!.start).diffNow(["hour", "minute", "seconds"])
+                const sch = new Date().getHours() > 0 ? nextSchedule : currentSchedule
+                const temp = updateNextDay(sch.periods[0].interval!.start).diffNow(["hour", "minute", "seconds"])
                 timeLeft = `${temp.toObject().hours!}:${zN(temp.toObject().minutes!)}:${zN(Math.floor(temp.toObject().seconds!))}` // time left till that period starts
                 currentPeriodName = "n/a"
-                nextPeriodName = currentSchedule.periods[0]?.name
+                nextPeriodName = sch.periods[0]?.name
                 TYPE = 1
             } else if (currentSchedule.periods.some(p => between(p.interval!))) {
                 const temp1 = currentSchedule.periods.filter(p => between(p.interval!))[0]
