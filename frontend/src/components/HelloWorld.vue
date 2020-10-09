@@ -91,6 +91,7 @@ export default class HelloWorld extends Vue {
   #clock_analog_inner { // 
     grid-area: 2 / 2;
     --size: #{'min(500px, 70vmin)'};
+
     // --mode2: #ffffff; //b6;
     // --mode: #000000b6;
 

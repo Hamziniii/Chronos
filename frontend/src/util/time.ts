@@ -18,7 +18,7 @@ export function run(sched?: Schedule[]) {
         let selected2 = ((selected || 0) + 1) % c.length
         let TYPE = 0
         currentSchedule = selected != undefined && s[selected] != undefined ? s[selected] : s.filter(_s => _s.days.includes(days.indexOf(DateTime.local().weekdayLong) as Schedule["days"][0]))[0]
-        nextSchedule = selected2 != undefined && s[selected2] != undefined ? s[selected2] : s.filter(_s => _s.days.includes(days.indexOf(DateTime.local().weekdayLong) as Schedule["days"][0]))[0]
+        nextSchedule = selected != undefined && selected2 != undefined && s[selected2] != undefined ? s[selected2] : s.filter(_s => _s.days.includes((days.indexOf(DateTime.local().weekdayLong) + 1) % 6 as Schedule["days"][0]))[0]
         // console.log(currentSchedule,  selected != undefined && s[selected] != undefined, days.indexOf(DateTime.local().weekdayLong))
         if(currentSchedule == undefined) {
             timeLeft = "No schedule for today"
