@@ -7,7 +7,8 @@ import { DateTime } from "luxon";
 import hhsDay from "./routes/hhsDay";
 //Creates express server
 let app = Express();
-
+var cors = require("cors");
+app.use(cors());
 require("dotenv").config();
 
 app.set("views", path.join(__dirname, "views"));
