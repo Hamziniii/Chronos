@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@types/node": "^14.11.1",
+    "chronos-time": "git+https://github.com/Cloraxlan/chronos-time.git",
     "core-js": "^3.6.5",
     "luxon": "^1.25.0",
     "register-service-worker": "^1.7.1",

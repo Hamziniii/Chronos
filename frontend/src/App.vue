@@ -4,7 +4,7 @@
       <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
       <Timing />
     </div>
-    <div id="changeButton"><img src="./assets/refresh.svg"></div>
+    <!-- <div id="changeButton"><img src="./assets/refresh.svg"></div> -->
   </div>
 </template>
 
