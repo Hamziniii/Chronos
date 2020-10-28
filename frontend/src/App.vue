@@ -47,6 +47,8 @@ export default class App extends Vue {
 
   public mounted() {
     (this.$el as HTMLElement)?.style.setProperty("--mode", getColor(this.colors[1]) + "b6")
+
+    
   }
 }
 </script>

@@ -20,19 +20,21 @@ export default class Timings extends Vue {
     // this.int = setInterval((() => {this.timing = time.run(); this.timingData = this.timing()}).bind(this), 1000)
     this.s = new ExternalSchedualLoader(  "https://chronoshhs.herokuapp.com/hhs", "https://chronoshhs.herokuapp.com/HHSTodayIs")
     
-setInterval((() => {
-  console.log(this.s?.currentTimeLeft, this.s?.currentName, this.s?.nextName, this.s?.currentTag);
-  let temp = ""
-  if(typeof this.s?.currentTimeLeft != "string")
-    temp = (this.s?.currentTimeLeft || [0,0,0]).map(this.zN).join(":")
-  else 
-    temp = this.s?.currentTimeLeft
-  this.timingData = {
-    timeLeft: temp,
-    currentPeriodName: this.s?.currentName || "N/A",
-    nextPeriodName: this.s?.nextName || "N/A" 
+    setInterval((() => {
+      console.log(this.s?.currentTimeLeft, this.s?.currentName, this.s?.nextName, this.s?.currentTag);
+      let temp = ""
+      if(typeof this.s?.currentTimeLeft != "string")
+        temp = (this.s?.currentTimeLeft || [0,0,0]).map(this.zN).join(":")
+      else 
+        temp = this.s?.currentTimeLeft
+      document.title = temp 
+      this.timingData = {
+        timeLeft: temp,
+        currentPeriodName: this.s?.currentName || "N/A",
+        nextPeriodName: this.s?.nextName || "N/A" 
+      }
+    }).bind(this), 1000)
   }
-}).bind(this), 1000)}
 
   public beforeUnmount() {
     if(this.int != null)
