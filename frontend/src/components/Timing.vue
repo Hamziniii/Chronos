@@ -32,7 +32,7 @@ export default class Timings extends Vue {
         timeLeft: temp,
         currentPeriodName: this.s?.currentName || "N/A",
         nextPeriodName: this.s?.nextName || "N/A" 
-      }
+      } // asdf
     }).bind(this), 1000)
   }
 
