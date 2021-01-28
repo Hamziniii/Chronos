@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/Hamziniii/Chronos/issues"
   },
-  "homepage": "https://github.com/Hamziniii/Chronos#readme"
+  "homepage": "https://github.com/Hamziniii/Chronos#readme",
+  "dependencies": {
+    "chronos-time": "git+https://github.com/Cloraxlan/chronos-time.git"
+  }
 }

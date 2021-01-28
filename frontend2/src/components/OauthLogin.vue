@@ -17,7 +17,7 @@ export default {
       });
     });
     window.onSignIn = googleUser => {
-      var id_token = googleUser.getAuthResponse().id_token;
+      const id_token = googleUser.getAuthResponse().id_token;
       //console.log("ID Token: " + id_token);
       if (
         localStorage.getItem("sessionId") == "undefined" ||
