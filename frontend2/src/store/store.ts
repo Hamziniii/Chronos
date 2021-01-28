@@ -38,12 +38,12 @@ export interface ScheduleM {
 }
 
 export const State = {
-    backgroundColors: 
-        ["#36ebeb", "#280652"], 
-        // ["#93a5cf", "#e4efe9"],
+    backgroundColors: // #667eea → #764ba2
+        // ["#36ebeb", "#280652"], 
+        ["#93a5cf", "#e4efe9"],
         // ["#667eea", "#764ba2"],
-
-        // ["#7f5a83", "#0d324d"], // this is hte background colors
+// 
+//         ["#7f5a83", "#0d324d"], // this is hte background colors
     backgroundAngle: 135,
     isBackgroundAnimated: true, 
     isBackgroundSmoothed: true, 
