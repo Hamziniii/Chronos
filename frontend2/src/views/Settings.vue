@@ -1,14 +1,14 @@
 <template>
   <div class="settings" :style="$store.getters.mainBackground">
-    <Modal :show="isModalOpened" :fields="modalData" @close="closeModal" :color="interpolateColor($store.state.backgroundColors[0], last($store.state.backgroundColors))" :title="modalTitle"></Modal>
+    <Modal :show="isModalOpened" :backgroundColor="isModalBackgroundColors" :fields="modalData" @close="closeModal" :color="interpolateColor($store.state.backgroundColors[0], last($store.state.backgroundColors))" :title="modalTitle"></Modal>
     <div id="body" style="z-index: 2">
       <div id="left">
-        <div v-for="(v, i) in views" :key="v" id="category" :style="i == view ? 'background: ' + interpolateColor($store.state.backgroundColors[0], last($store.state.backgroundColors)) : ''" @click="view = i"><span>{{v}}</span></div>
+        <div v-for="(v, i) in views.filter(v => v != 'Home')" :key="v" id="category" :style="i == view ? 'background: ' + interpolateColor($store.state.backgroundColors[0], last($store.state.backgroundColors)) : ''" @click="view = i"><span>{{v}}</span></div>
       </div>
       <div id="right">
         <div id="title"><span id="titleText">Settings: {{views[view]}}</span></div>
-        <div id="info" v-if="views[view] == 'Appearance'">
-          <span v-for="(v, i) in $store.getters.storeSettings" class="display" test='3' :tooltip="sI[v]?.tooltip" :key="KEYS[i]">{{sI[v]?.display}}: <FormElement :name="v" style="display: inline" :id="v" class="formElement"></FormElement><br></span>
+        <div id="info" v-if="views[view] == 'Appearance'" style="overflow-x: visible; overflow-y: visible;"> <!-- MAKE SURE TO REMOVE WHEN MORE THINGS COME-->
+          <span v-for="(v, i) in $store.getters.storeSettings" class="display" test='3' :tooltip="sI[v]?.tooltip" :key="KEYS[i]">{{sI[v]?.display}}: <FormElement :name="v" style="display: inline" :id="v" class="formElement" @edit-background-colors="modalForBackgroundColors"></FormElement><br></span>
         </div>
         <div id="info" v-else-if="views[view] == 'HHS Schedule'">
           <span v-for="(v) in [1,2,3,4,5,6,7,8]" :key="v">Period {{v}}: <input type="text" :value="$store.state.hhsScheduleNames[v-1]"></span>
@@ -25,24 +25,47 @@
           <p>Alert: <FormElement :name="'timeBeforeNotification'" style="display: inline" class="formElement"></FormElement></p>
           <p>Sound Effects: None (to be added)</p>
         </div>
+        <div id="info" v-else-if="views[view] == 'Data'">
+          <div id="stuff" style="padding: 50px; height: calc(100% - 144px); grid-template: 1fr auto 1fr / 1fr auto auto auto 1fr; display: grid;">
+            <div style="grid-area: 2 / 2; ">
+              <img @click="upload" src="../assets/cloud_upload-white-18dp.svg" id="settings-img" style="width: 100px;">
+              <span style="text-align: center;">Upload Data</span>
+            </div>
+            <div id="login" style="width: 50px; grid-area: 2/3;">
+              <!-- <OauthLogin :clientID="'408077029007-b2j0stflkuace7jiquvc8glo17g9gir9'" ></OauthLogin> -->
+            </div>
+            <div style="grid-area: 2 / 4;">
+              <img @click="download" src="../assets/cloud_download-white-18dp.svg" id="settings-img" style="width: 100px; place-self: start;">
+              <span style="text-align: center;">Download Data</span>  
+            </div>            
+          </div>
+        </div>
+        <div id="info" v-else-if="views[view] == 'Account'">
+            <div id="stuff" style="width: 100%; height: 100%; display: grid; grid-template: 1fr auto auto auto 1fr / 1fr auto 1fr; row-gap: 10px">
+                <div style="grid-area: 2 / 2">Currently {{signedIn ? "Signed In" : "Signed Out"}}</div>
+                <div style="grid-area: 3 / 2">Signed in as: {{signInData?.basicProfile?.Qt || "N/A"}}</div>
+                <button style="grid-area: 4 / 2; width: 10vw; height: 3em; place-self: center; border-radius: 25px;" @click="sign">Sign {{signedIn ? "Out" : "In"}}</button>
+            </div>
+        </div>
         <div id="info" v-else-if="views[view] == 'Read Me!'">
           <p style="font-size: 1.3rem; margin-top: 0px">Here is the run down:</p>
           <p>1. After you change something, click save to save. If you need to reset, click reset.</p>
           <p>2. The spinning hour glass will take you back to the clock</p>
-          <p>3. Edit HHS Schedule to add in class names. When class is in session, the name should be on the clock.</p>
-          <p>4. Custom scheduling is almost done: UI is done, functionality is almost done</p>
-          <p>5. Appearance is getting an update soon, and will be easier to work with.</p> 
-          <p>6. Notifcations are stupid, and i'll eventually fix them.</p> 
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfzWUJPsyFX_HVq0Vjk7UnRLuatSB3-g4QTBy0Y0DPoLvfCKA/viewform" style="color: lightblue">7. If you want, please fill this feedback form</a>
+          <p>3. Head over to Scheduling to add in custom schedules</p>
+          <p>4. To save and get data from the cloud, first sign-in in Account, then head to Data</p>
+          <p>5. Sharing schedules coming soon</p>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfzWUJPsyFX_HVq0Vjk7UnRLuatSB3-g4QTBy0Y0DPoLvfCKA/viewform" style="color: lightblue">6. If you want, please fill this feedback form</a>
         </div>
-        <div id="options"><button id="save" @click="update" :style="'--bg:' + interpolateColor($store.state.backgroundColors[0], last($store.state.backgroundColors))">Save</button><button id="reset" @click="reset" :style="'--bg: #' + 'ff0000'">Reset</button></div>
+        <div id="home" v-else-if="views[view] == 'Home'">
+          <div v-for="(v, i) in views.filter(v => v != 'Home')" :key="v" id="category" :style="i == view ? 'background: ' + interpolateColor($store.state.backgroundColors[0], last($store.state.backgroundColors)) : ''" @click="view = i"><span>{{v}}</span></div>
+        </div>
+        <div id="options"><button id="save" @click="update" :style="'--bg:' + interpolateColor($store.state.backgroundColors[0], last($store.state.backgroundColors))">Save</button><button id="reset" @click="reset" :style="'--bg: #' + 'ff0000'">Reset</button><button id="home" @click="home" :style="'--bg: #' + 'ffffff'">Home</button></div>
       </div>
       <!-- <span>This the settings page, current settings:</span>
       <span>{{$store.state.backgroundColors}}</span> -->
     </div>
-    <p style="grid-area: 3 / 2">THIS IS STILL UNDER DEVELOPMENT, SUBJECT TO CHANGE</p>
+    <!-- <p style="grid-area: 3 / 2">THIS IS STILL UNDER DEVELOPMENT, SUBJECT TO CHANGE</p> -->
 
-    <div id="login" z-index: ><OauthLogin :clientID="'408077029007-b2j0stflkuace7jiquvc8glo17g9gir9'"></OauthLogin></div>
     <router-link to="/" id="main">
       <img v-if="$store.getters.contrastColor == 'black'" src="../assets/hourglass_full-black-18dp.svg" id="settings-img"> 
       <img v-else src="../assets/hourglass_full-white-18dp.svg" id="settings-img"> 
@@ -52,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { ExternalSchedualLoader, SchedualSettings } from "chronos-time";
+import { ExternalSchedualLoader, SchedualManager, SchedualSettings } from "chronos-time";
 import { Options, Vue } from "vue-class-component";
 import OauthLogin from "../components/OauthLogin.vue"
 import FormElement from "../components/FormElement.vue"
@@ -61,21 +84,31 @@ import {STORE} from '../utils/storeType'
 import Modal from '../components/Modal.vue'
 import {Field} from '../components/Modal.vue'
 import { StateInfo } from "../store/store";
+import {DateTime} from 'luxon'
 
 
 @Options({name: "Settings", components: {OauthLogin, FormElement, Scheduling, Modal}})
 export default class Settings extends Vue {
   $store!: STORE
   sI = StateInfo
-  views = ["Appearance", "Notifications", "HHS Schedule", "Scheduling", "Read Me!"]
+  views = ["Appearance", "Scheduling", "Data", "Account", "Read Me!", "Home"] //["Appearance", "Notifications", "HHS Schedule", "Scheduling", "Read Me!"]
   view = this.views.indexOf("Read Me!")
   scheduling = "Unchanged - Using HHS Schedule"
   interval = -1
-  schedule!: ExternalSchedualLoader
+  schedule!: ExternalSchedualLoader | SchedualManager
   KEYS = [1,2,3,4,5,6,7,8]
   
   isModalOpened = false
   modalTitle = 'why'
+  isModalBackgroundColors = false
+
+  $gAuth: any
+  signedIn = false
+  signInData: {
+    id?: string,
+    basicProfile?: any, 
+    authResponse?: string
+  } = {}
 
   modalData: Field[] = [/**{
     name: "color",
@@ -121,7 +154,6 @@ export default class Settings extends Vue {
   submittedModal?: Field[]
   onSubmit?: Function = console.log
 
-
   public async mounted() {
     let sessionId = ({id: ""})
     if((sessionId = JSON.parse(localStorage.getItem("sessionId") || "") ?? null) != null) {
@@ -130,7 +162,13 @@ export default class Settings extends Vue {
       console.log(response)
     }
 
-    this.schedule = new ExternalSchedualLoader("https://chronoshhs.herokuapp.com/hhs", "https://chronoshhs.herokuapp.com/HHSTodayIs")
+    function nothing() {1==1}
+    if(this.$store.state.hhsSchedule)
+      this.schedule = new ExternalSchedualLoader("https://chronoshhs.herokuapp.com/hhs", "https://chronoshhs.herokuapp.com/HHSTodayIs")
+    else {
+      this.schedule = new SchedualManager(this.$store.state.schedules[this.$store.state.usingSchedule].scheduals, nothing) 
+      this.schedule.goToSchedual(new Date().toLocaleString('en-us', {  weekday: 'long' }).toLocaleLowerCase())
+    }
     this.interval = window.setInterval((() => {
       if(this.schedule.currentTimeLeft)
         document.title = typeof this.schedule.currentTimeLeft == "string" ? this.schedule.currentTimeLeft : this.schedule.currentTimeLeft.map(t => (t < 10 ? "0" : "") + t).join(":")
@@ -203,10 +241,123 @@ export default class Settings extends Vue {
     return '#' + r + g + b;
   }
 
-  closeModal(maybe) {
+  closeModal(maybe, maybe2) {
     if(maybe != undefined && this.onSubmit)
-      this.onSubmit(maybe)
+      this.onSubmit(maybe, maybe2)
     this.isModalOpened = false
+    this.isModalBackgroundColors
+  }
+
+  modalForBackgroundColors() {
+    this.isModalBackgroundColors = true 
+    this.modalTitle = 'Edit Background Colors'
+
+    this.isModalOpened = true
+    this.onSubmit = data => {
+      this.$store.state.backgroundColors = data.map(d => d.value)
+      localStorage.setItem("SETTINGS", JSON.stringify(this.$store.state))
+    }
+  }
+
+  upload() {
+    if(!this.signedIn) {
+      alert("You are not signed in!")
+      this.account()
+      return
+    }
+    if(confirm("Are you sure you want to upload your data to the cloud? It will override the data over there."))
+      fetch('https://chronoshhs.herokuapp.com/saveData', {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+
+          },
+          body: JSON.stringify({sessionId: JSON.parse(localStorage.getItem('sessionId') as string).id, customization: JSON.parse(localStorage.getItem('SETTINGS') as string)})
+      }).then(async r => alert(`Success: ${(await r.json() as any).success}`))
+  }
+  download() {
+    if(!this.signedIn) {
+      alert("You are not signed in!")
+      this.account()
+      return 
+    }
+    if(confirm("Are you sure you want to download your data from the cloud? It will override the data over here."))
+      fetch('https://chronoshhs.herokuapp.com/getData', {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+
+          },
+          body: JSON.stringify({sessionId: JSON.parse(localStorage.getItem('sessionId') as string).id})
+      }).then(async r => {
+        const data = await r.json()
+        localStorage.setItem("SETTINGS", JSON.stringify((data as any).data))
+        this.$store.commit("updateEntireState", data)
+        window.location.reload()
+      })
+  }
+  home() {
+    this.view = this.views.indexOf("Home")
+  }
+  account() {
+    this.view = this.views.indexOf("Account")
+  }
+
+  sign() {
+    if(this.signedIn)
+      this.signOut()
+    else 
+      this.signin()
+  }
+
+  async signin() {
+    const temp = await this.$gAuth.signIn()
+    console.log(temp)
+    this.signedIn = true
+    this.signInData = {
+      id: temp.getId(),
+      basicProfile: temp.getBasicProfile(),
+      authResponse: temp.getAuthResponse()
+    }
+
+    if(localStorage.getItem('email') == null)
+      localStorage.setItem('email', this.signInData.basicProfile.Qt)
+
+    if (
+      localStorage.getItem('email') != this.signInData.basicProfile.Qt ||
+      localStorage.getItem("sessionId") == "undefined" ||
+      localStorage.getItem("sessionId") == null ||
+      DateTime.fromObject(JSON.parse(localStorage.getItem("sessionId") as string).expiresAt)
+        .diffNow()
+        .as("seconds") <= 0
+    ) {
+      fetch("https://chronoshhs.herokuapp.com/authenticate", {
+        method: "post",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ accessToken: temp.qc.id_token })
+        }).then(res => {
+          res.json().then(json => {
+            if (json.success) {
+              localStorage.setItem("sessionId", JSON.stringify(json.sessionId));
+            } else {
+              throw "Auth Error:" + json.reason;
+            }
+          })
+      })
+    }
+
+    localStorage.setItem('email', this.signInData.basicProfile.Qt)
+  }
+
+  async signOut() {
+    this.$gAuth.signOut()
+    this.signedIn = false
+    this.signInData = {}
   }
 }
 </script>
@@ -273,18 +424,19 @@ export default class Settings extends Vue {
   grid-template: 1fr auto 1fr / 1fr auto 1fr;
 }
 
-#login {
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
-}
+// Fogin {
+//   position: absolute;
+//   bottom: 40px;
+//   left: 40px;
+// }
 
 #body {
   grid-area: 2/2;
   --padding: 75px;
   --height: Min(550px, calc(100vh - var(--padding)));
-  width: Min(800px, calc(100vw - var(--padding)));
+  --width: Min(800px, calc(100vw - var(--padding)));
   height: var(--height);
+  width: var(--width);
   border-radius: 35px;
   padding: calc(var(--padding) / 2);
   padding-left: 0px;
@@ -292,7 +444,26 @@ export default class Settings extends Vue {
   display: grid;
   grid-template: 1fr / 1fr 3fr;
 
-  background: #1e1e1e;
+  background: #1e1e1eac;
+
+  // @media (max-width: 850px) {
+  //   & {
+  //     transform: scale(.75);
+  //     --width: Min(800px, calc(125vw - var(--padding)));
+  //   }            
+  // }
+
+  @media (max-width: 715px) {
+    & {
+      grid-template: 1fr / 1fr;
+      padding-left: calc(var(--padding) / 4);
+      padding-right: calc(var(--padding) / 4);
+    }            
+  }
+
+  @media (max-width: 425px) {
+    font-size: .9rem;
+  }
 
   #category {
     width: 100%;
@@ -305,7 +476,13 @@ export default class Settings extends Vue {
       grid-area: 2 / 2;
     }
   }
-
+  #left {
+    @media (max-width: 715px) {
+      & {
+        display: none;
+      }            
+    }
+  }
   #right {
     display: grid;
     height: var(--height);
@@ -325,6 +502,7 @@ export default class Settings extends Vue {
     #info {
       // margin-top: 20px;
       position: relative;
+      z-index: 5;
       min-height: 0;
       span {
         display: block;
@@ -334,22 +512,31 @@ export default class Settings extends Vue {
         }
       }
       .display {
-        // position: relative;
+        position: relative;
       }
       .display::before {
         display: none;
         content: attr(tooltip);
         position: absolute;
-        top: 12px;
-        left: 12px;
+        bottom:  -50%; //2.5em;
+        --width: 120px;
+        --padding: 10px;
+        left:  70.5%; //calc(50% - calc(calc(var(--width) + var(--padding)) / 2));
+        // margin-left: -12px;
+        // margin-top: -12px;
         // background: black;
-        border-style: solid;
-        border-color: white;
+        // border-style: solid;
+        // border-color: white;
         border-width: 3px;
         border-radius: 15px;
-        padding: 5px;
-        width: 120px;
+        padding: var(--padding);
+        width: var(--width);
         z-index: 6;
+        background: #1e1e1eac;
+
+        &:hover {
+          display:none !important;
+        }
       }
 
       .display:hover::before {
@@ -391,6 +578,12 @@ export default class Settings extends Vue {
       column-gap: 15px;
       outline-style:none;
 
+      @media (max-width: 715px) {
+        & {
+          grid-template: 1fr auto 1fr / 1fr auto auto auto 1fr;           
+        }
+      }
+
       button {
         &#save {
           grid-area: 2/2;
@@ -398,6 +591,16 @@ export default class Settings extends Vue {
 
         &#reset {
           grid-area: 2/3;
+        }
+
+        &#home {
+          display: none;
+            @media (max-width: 715px) {
+              & {
+                display: block;
+                grid-area: 2/4;
+              }            
+            }
         }
         width: 100px;
         height: 50px;    

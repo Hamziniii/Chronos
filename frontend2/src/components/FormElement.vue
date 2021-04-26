@@ -1,6 +1,7 @@
 <template>
     <!-- <p>{{type}} {{name}}</p> -->
-    <button v-if="type == 'Boolean'" @click="local = !local ?? !this.$store.state[this.name]" :class="(local ?? this.$store.state[this.name]) ? 'enabled' : 'disabled'">{{local ?? this.$store.state[this.name]}}</button>
+    <button v-if="name == 'backgroundColors'" @click="editClicked">edit</button>
+    <button v-else-if="type == 'Boolean'" @click="local = !local ?? !this.$store.state[this.name]" :class="(local ?? this.$store.state[this.name]) ? 'enabled' : 'disabled'">{{local ?? this.$store.state[this.name]}}</button>
     <input v-else-if="type == 'Number'" type="number" :value="this.$store.state[this.name]" min="0" max="359">
     <input v-else-if="type == 'Array'" type="text" :value="this.$store.state[this.name].join(', ')">
     <span v-else>{{this.$store.state[this.name] ?? "n/a"}}</span>
@@ -14,7 +15,8 @@ import {STORE} from '../utils/storeType'
 @Options({
   props: {
     name: String
-  }
+  }, 
+  emits: ["edit-background-colors"]
 })
 export default class FormElements extends Vue {
   name!: string
@@ -24,6 +26,10 @@ export default class FormElements extends Vue {
   
   public mounted() {
     this.local = this.$store.state[this.name]
+  }
+
+  editClicked() {
+    this.$emit('edit-background-colors')
   }
 
   get type() {

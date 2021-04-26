@@ -28,7 +28,7 @@ function avg(c: string,d: string){
     return output
 }
 
-function easeInOutQuad(x: number): number {
+export function easeInOutQuad(x: number): number {
     return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
 }
 
@@ -63,7 +63,7 @@ export const State = {
 }
 
 export const state = {...State}
-export const stateSettingsBlacklist: (keyof typeof state)[] = ["hhsScheduleNames", "hhsScheduleLinks", "notifications", "timeBeforeNotification", "schedules", "usingSchedule", "contrastColorOverride", "isBackgroundSmoothed", 'hhsSchedule']
+export const stateSettingsBlacklist: (keyof typeof state)[] = ["hhsScheduleNames", "hhsScheduleLinks", "notifications", "timeBeforeNotification", "schedules", "usingSchedule", "contrastColorOverride", "isBackgroundSmoothed"]
 // export const stateSettingsWhilelist: (keyof typeof state)[] = (Object.keys(State) as (keyof typeof state)[]).filter(s => !stateSettingsBlacklist.includes(s))
 
 export const StateInfo = {
@@ -76,27 +76,27 @@ export const StateInfo = {
         tooltip: 'The angle you want your background to go'
     },
     isBackgroundAnimated: {
-        display: 'Is Background Animated?',
-        tooltip: 'Do you want your background to be animated?'
+        display: 'Background Movement',
+        tooltip: 'Do you want your background to be animated and move?'
     },
     time: {
-        display: 'Clock Time?',
+        display: 'Current Time / Date',
         tooltip: 'Do you want to see the current time and date?'
     },
     current: {
-        display: 'Time Left?',
-        tooltip: 'Do you want to see how much time is left in class?'
+        display: 'Current Period Info',
+        tooltip: 'Do you want to see information about the current period?'
     }, 
     next: {
-        display: 'Next Time?',
+        display: 'Next Period Info',
         tooltip: 'Do you want to see details about the next time period?'
     },
     settingsColorPercent: {
         display: 'Primary Color',
-        tooltip: 'The primary color based on background colors and percentage'
+        tooltip: 'The primary color based on background colors and percentage. Ex: if your background is blue and red, 50 would be purple.'
     },
     hhsSchedule: {
-        display: 'HHS Schedule?',
+        display: 'Use HHS Schedule',
         tooltip: 'Do you want to use the HHS Schedule, or a custom one?'
     }
 } as {

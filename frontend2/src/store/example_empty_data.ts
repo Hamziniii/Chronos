@@ -6,7 +6,7 @@ export const example_data = [
             "begin": [7, 30],
             "end": [9, 0]
         }],
-        "outOfBoundsName": "Out of school",
+        "outOfBoundsName": "Out of schedule",
         "tags": ["monday"],
         "defaultNextSchedualTag": "tuesday"
     }, {
@@ -17,9 +17,9 @@ export const example_data = [
                 "end": [9, 0]
             }
         ],
-        "outOfBoundsName": "Out of school",
+        "outOfBoundsName": "Out of schedule",
         "tags": ["tuesday"],
-        "defaultNextSchedualTag": "wendsday"
+        "defaultNextSchedualTag": "wednesday"
     }, {
         "timeSlots": [
             {
@@ -28,8 +28,8 @@ export const example_data = [
                 "end": [9, 0]
             }
         ],
-        "outOfBoundsName": "Out of school",
-        "tags": ["wendsday"],
+        "outOfBoundsName": "Out of schedule",
+        "tags": ["wednesday"],
         "defaultNextSchedualTag": "thursday"
     }, {
         "timeSlots": [
@@ -39,7 +39,7 @@ export const example_data = [
                 "end": [9, 0]
             }
         ],
-        "outOfBoundsName": "Out of school",
+        "outOfBoundsName": "Out of schedule",
         "tags": ["thursday"],
         "defaultNextSchedualTag": "friday"
     }, {
@@ -50,7 +50,7 @@ export const example_data = [
                 "end": [9, 0]
             }
         ],
-        "outOfBoundsName": "Out of school",
+        "outOfBoundsName": "Out of schedule",
         "tags": ["friday"],
         "defaultNextSchedualTag": "saturday"
     }, {

@@ -2,7 +2,6 @@
   <div class="scheduling">
     <div v-if="view == views[0]" id="SMM">
       <h1 id="title" style="margin-bottom: 5px;">{{title}}</h1>
-      <span><br>the schedule wont change, but you can still mess around with this ig.</span>
       <span v-if="$store.state.schedules.length == 0 || $store.state.schedules == null || $store.state.schedules == ({})" style="display:block">No custom schedules added yet! Click plus button to add one.</span>
       <div id="schedules" v-for="(s, i) in $store.state.schedules" :key="i" :index="i">
         <div class="schedule">Name: <input type="text" name="schedule" v-model="$store.state.schedules[i].name"></div>
@@ -27,8 +26,8 @@
         <div class="name"><div id="name_text">Name: <input type="text" name="timename" id="input_time" v-model="t.name"></div> <img src="../assets/delete_outline-white-18dp.svg" class="delete" @click="deleteSchedule"></div>
         <div class="begin">Begin: <input type="time" name="begin" id="input_begin" @change="updateTimeBegin" :value="`${t.begin[0] < 10 ? '0' + t.begin[0] : t.begin[0]}:${t.begin[1] < 10 ? '0' + t.begin[1] : t.begin[1]}`"></div>
         <div class="end">End: <input type="time" name="end" id="input_end" @change="updateTimeEnd" :value="`${t.end[0] < 10 ? '0' + t.end[0] : t.end[0]}:${t.end[1] < 10 ? '0' + t.end[1] : t.end[1]}`"></div>
-        <span v-if="(t.end[0] * 60 + t.end[1]) <= (t.begin[0] * 60 + t.begin[1])" style="color:red;font-size:1.2rem;">The end must chonologically come after the beginning!</span>
-        <span v-if="i > 0 && ($store.state.schedules[index].scheduals[subIndex].timeSlots[i-1].end[0] * 60 + $store.state.schedules[index].scheduals[subIndex].timeSlots[i-1].end[1]) >= (t.begin[0] * 60 + t.begin[1])" style="color:red;font-size:1.2rem;">This timeslot must chonologically come after the previous one!</span>
+        <span v-if="(t.end[0] * 60 + t.end[1]) < (t.begin[0] * 60 + t.begin[1])" style="color:red;font-size:1.2rem;">The end must chonologically come after the beginning!</span>
+        <span v-if="i > 0 && ($store.state.schedules[index].scheduals[subIndex].timeSlots[i-1].end[0] * 60 + $store.state.schedules[index].scheduals[subIndex].timeSlots[i-1].end[1]) > (t.begin[0] * 60 + t.begin[1])" style="color:red;font-size:1.2rem;">This timeslot must chonologically come after the previous one!</span>
       </div>
       <span v-if="($store.state.schedules[index].scheduals[subIndex].timeSlots.length ?? 0) == 0"><br>Schedule is empty. If you have something on this day, add a time slot!</span>
       <img src="../assets/arrow_back-white-18dp.svg" id="back" @click="switchToSM">
@@ -188,6 +187,9 @@ export default class Scheduling extends Vue {
         border-width: 2px;
         border-style: solid;
         width: 65%;
+        @media (max-width: 715px) {
+          width: 80%;
+        }
         border-radius: 30px;
 
         display: grid;
