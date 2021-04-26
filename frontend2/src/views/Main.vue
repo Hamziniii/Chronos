@@ -18,9 +18,10 @@
       <span id="timeleft">{{ info.currentTimeLeft }}</span>
     </div>
     <div v-else id="center">
-      <Clock :darkMode="true" :r1="50" :r2="20" :s="'500px'"></Clock>
+      <Clock :darkMode="true" :r1="50" :r2="20" :s="width > 520 ? '500px' : width - 20 + 'px'"></Clock>
     </div>
     
+    <!-- <OauthLogin clientID="408077029007-b2j0stflkuace7jiquvc8glo17g9gir9" /> -->
     <!-- <div id="settings">
     </div> -->
 
@@ -36,8 +37,10 @@
 import { Options, Vue } from 'vue-class-component'
 import store from '../store/index'
 import { state, mutations, getters, actions } from '../store/store'
-import { ExternalSchedualLoader, SchedualManager } from 'chronos-time'
+import { ExternalSchedualLoader, SchedualManager, SchedualSettings } from 'chronos-time'
 import Clock from '../components/Clock.vue'
+import { Schedule } from '../../../frontend/src/util/time'
+import OauthLogin from "../components/OauthLogin.vue";
 
 // import HelloWorld from '@/components/HelloWorld.vue'
 // import { mapMutations, mapState } from 'vuex'
@@ -48,10 +51,10 @@ import Clock from '../components/Clock.vue'
   //   ...mapState(["backgroundColors"])
   // }
 
-@Options({name: "Main", components: {Clock}})
+@Options({name: "Main", components: {Clock, OauthLogin}})
 export default class Main extends Vue {
   $store!: Exclude<typeof store, "state" | "mutations" | "actions" | "getters"> & {getters: typeof getters} & {state: typeof state} & {mutations: typeof mutations} & {actions: typeof actions}
-  schedule!: ExternalSchedualLoader
+  schedule!: ExternalSchedualLoader | SchedualManager
   interval!: number
   time = ""
   date = new Date()
@@ -67,15 +70,43 @@ export default class Main extends Vue {
     nextPeriod: number
   } = {currentTimeLeft: "N/A", period: 0, nextPeriod: 0}
   alerted = false
+  width = 530
 
   addZero(n: number) {
     return (n > 9 ? "" : "0") + n
   }
 
   public mounted() {
+      this.width = document.body.clientWidth
     // window.setInterval((()=>console.log(this.info.currentTimeLeft)).bind(this), 500)
     // if(this.$store.state.hhsSchedule || this.$store.state.schedules == null || this.$store.state.schedules == undefined || this.$store.state.schedules == [])
-      this.schedule = new ExternalSchedualLoader("https://chronoshhs.herokuapp.com/hhs", "https://chronoshhs.herokuapp.com/HHSTodayIs")
+      function nothing() {1==1}
+      function addDownTime(sch: SchedualSettings[]): SchedualSettings[] {
+        return sch.map(s => {
+          const oSch = s.timeSlots
+          const nSch = oSch
+          for(let i = 0; i < oSch.length - 1; i++) {
+            if(oSch[i].end[0] == oSch[i+1].begin[0] && oSch[i].end[1] == oSch[i+1].begin[1])
+              continue
+            else
+              nSch.splice(nSch.indexOf(oSch[i]) + 1, 0, {name: "Down Time", begin: oSch[i].end, end: oSch[i+1].begin, type: "passing"})
+          }
+          s.timeSlots = nSch
+          return s
+        })
+      }
+      if(this.$store.state.hhsSchedule)
+        this.schedule = new ExternalSchedualLoader("https://chronoshhs.herokuapp.com/hhs", "https://chronoshhs.herokuapp.com/HHSTodayIs")
+      else {
+        this.schedule = new SchedualManager(addDownTime(this.$store.state.schedules[this.$store.state.usingSchedule].scheduals), nothing) 
+        this.schedule.goToSchedual(new Date().toLocaleString('en-us', {  weekday: 'long' }).toLocaleLowerCase())
+
+        // console.log(this.$store.state.schedules[this.$store.state.usingSchedule].scheduals, addDownTime(this.$store.state.schedules[this.$store.state.usingSchedule].scheduals))
+      }
+        //new ExternalSchedualLoader(/* this is custom data */, "https://chronoshhs.herokuapp.com/HHSTodayIs") 
+        //this.schedule = // CUSTOM SCHEDULE localStorage.getItem("sessionId")
+
+      // this.$store.state.schedules
     // else 
     //   this.schedule = new SchedualManager(this.$store.state.schedules[this.$store.state.usingSchedule])
     this.interval = window.setInterval((() => {
@@ -194,6 +225,18 @@ export default class Main extends Vue {
             font-size: 6.5rem;
           }            
         }
+        @media (max-width: 540px) {
+          & {
+            font-size: 5.5rem;
+            bottom: calc(var(--shift) - .5rem);
+          }            
+        }
+        @media (max-width: 400px) {
+          & {
+            font-size: 5rem;
+            bottom: calc(var(--shift) - 1rem);
+          }            
+        }
       }
     }
 
@@ -210,6 +253,12 @@ export default class Main extends Vue {
       &:hover {
         transform: scale(1.3);
       }
+
+      @media (max-width: 400px) {
+          & {
+            right: calc(50% - 20px);
+          }            
+        }
 
       #settings-img {
         width: 40px;
