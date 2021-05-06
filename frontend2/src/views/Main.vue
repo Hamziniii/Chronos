@@ -2,25 +2,25 @@
   <div class="main" :style="$store.getters.mainBackground">
     <div id="background" :style="$store.getters.smoothingBackground"></div>
     <div id="timing" v-if="info.currentTimeLeft != 'N/A' || info.currentTimeLeft == undefined">
-      <span id="info">
+      <span id="info" style="z-index: 2;">
         <div id="left">
-          <span v-if="$store.state.current">Current: {{ current }}<span v-if="$store.state.next">, </span></span> 
+          <span v-if="$store.state.current" title="The name of the current period">Current: {{ current }}<span v-if="$store.state.next">, </span></span> 
           <br>
-          <span v-if="$store.state.next">Next: {{ next }}</span>
+          <span v-if="$store.state.next" title="The name of the next period (does not include passing periods for HHS)">Next: {{ next }}</span>
         </div>
         <div id="right">
-          <span v-if="$store.state.time" id="date">{{pad(parseInt(month + 1))}}/{{pad(parseInt(day))}}/{{parseInt(year) - 2000}}<br></span>
+          <span v-if="$store.state.time"  id="date">{{pad(parseInt(month + 1))}}/{{pad(parseInt(day))}}/{{parseInt(year) - 2000}}<br></span>
           <!-- <br> -->
           <span v-if="$store.state.time" id="time">{{ time }}</span>
         </div>
       </span>
       <br>
-      <span id="timeleft">{{ info.currentTimeLeft }}</span>
+      <span id="timeleft" :title="`How much time is left based on ${$store.state.hhsSchedule ? 'HHS schedule' : 'custom schedule: ' + $store.state.schedules[$store.state.usingSchedule].name}`">{{ info.currentTimeLeft }}</span>
     </div>
     <div v-else id="center">
       <Clock :darkMode="true" :r1="50" :r2="20" :s="width > 520 ? '500px' : width - 20 + 'px'"></Clock>
     </div>
-    
+
     <!-- <OauthLogin clientID="408077029007-b2j0stflkuace7jiquvc8glo17g9gir9" /> -->
     <!-- <div id="settings">
     </div> -->

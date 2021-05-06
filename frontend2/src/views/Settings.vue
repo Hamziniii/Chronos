@@ -91,7 +91,7 @@ import {DateTime} from 'luxon'
 export default class Settings extends Vue {
   $store!: STORE
   sI = StateInfo
-  views = ["Appearance", "Scheduling", "Data", "Account", "Read Me!", "Home"] //["Appearance", "Notifications", "HHS Schedule", "Scheduling", "Read Me!"]
+  views = ["Appearance", "Scheduling", "HHS Schedule", "Data", "Account", "Read Me!", "Home"] //["Appearance", "Notifications", "HHS Schedule", "Scheduling", "Read Me!"]
   view = this.views.indexOf("Read Me!")
   scheduling = "Unchanged - Using HHS Schedule"
   interval = -1
