@@ -11,10 +11,8 @@
     "@types/node": "^14.11.1",
     "chronos-time": "git+https://github.com/Cloraxlan/chronos-time.git",
     "core-js": "^3.6.5",
-    "luxon": "^1.25.0",
     "register-service-worker": "^1.7.1",
-    "vue": "^3.0.0",
-    "vue-class-component": "^8.0.0-0",
+    "vue": "^3.0.0-0",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
@@ -32,8 +30,7 @@
     "eslint-plugin-vue": "^7.0.0-0",
     "node-sass": "^4.12.0",
     "sass-loader": "^8.0.2",
-    "typescript": "~3.9.3",
-    "@types/luxon": "^1.24.4"
+    "typescript": "~3.9.3"
   },
   "eslintConfig": {
     "root": true,
@@ -48,21 +45,7 @@
     "parserOptions": {
       "ecmaVersion": 2020
     },
-    "rules": {
-      "@typescript-eslint/member-delimiter-style": [
-        "error",
-        {
-          "multiline": {
-            "delimiter": "comma",
-            "requireLast": false
-          },
-          "singleline": {
-            "delimiter": "comma",
-            "requireLast": false
-          }
-        }
-      ]
-    }
+    "rules": {}
   },
   "browserslist": [
     "> 1%",
