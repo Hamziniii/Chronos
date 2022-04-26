@@ -1,2 +1,3 @@
 # Chronos
-SciTops (ACST) Project #1. Basically a clock.
+SciTops (ACST) Project
+A Progressive Web App geared towards students and teachers alike, that allows for greater efficiency in a period schedule. The app allows you to see how much time is left in the current period. The website also allows you to create custom periods for each day of the week. The reason for creating this web app was because many of my fellow peers and teachers would not have an easy method of telling how much time is left before they have to switch to their next task, or end the current class, or go to their next class, etc. This application aimed to reduce the cognitive load that comes along with calculating how much time is left and reducing the need to be ever vigilant of missing your next "time slot". The project itself uses Vue.js, HTML, JavaScript, Typescript, Node.js (Backend), Firebase, and OAuth 2.0.
